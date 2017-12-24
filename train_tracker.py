@@ -9,8 +9,8 @@ from urllib.request import Request, urlopen, URLError
 from pandas import DataFrame
 import json
 
-train_number = '16382'
-date = '24-12-2017'
+train_number = '16382' #You can change the number to your desired train number.
+date = '24-12-2017' #Change the date to the date at which the train started.
 
 request_url = "https://api.railwayapi.com/v2/live/train/" + train_number + "/date/" + date + "/apikey/nxhcd5deez/"
 request = Request(request_url+"")
