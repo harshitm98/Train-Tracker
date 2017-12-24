@@ -6,13 +6,14 @@ Created on Sun Dec 24 20:57:24 2017
 """
 
 from urllib.request import Request, urlopen, URLError
+from pandas import DataFrame
 import json
 
-train_list=[16382]
+train_number = '12479'
+date = '24-12-2017'
 
-
-
-request = Request('https://api.railwayapi.com/v2/live/train/16382/date/24-12-2017/apikey/nxhcd5deez/')
+request_url = "https://api.railwayapi.com/v2/live/train/" + train_number + "/date/" + date + "/apikey/nxhcd5deez/"
+request = Request(request_url+"")
 
 try:
     response = urlopen(request)
@@ -22,21 +23,25 @@ try:
     loadedJson = json.loads(jsonResponse)
     print("Loading the JSON response...")
 
-    response_code = loadedJson['response_code']
-    route = loadedJson['route']
-    
-    nameList = []
-    expectedArrival = []
-    actualArrival=[]
-    finalDelay=[]
-    for i in route:
-        if(i['has_arrived']):
-            nameList.append(i['station']['name'])
-            expectedArrival.append(i['scharr'])
-            actualArrival.append(i['actarr'])
-            finalDelay.append(int(i['status'].split(' ')[0]))
-    
-        
+    response_code = int(loadedJson['response_code'])
+    if(response_code == 200):  
+        route = loadedJson['route']
+        nameList = []
+        expectedArrival = []
+        actualArrival=[]
+        finalDelay=[]
+        for i in route:
+            if(i['has_arrived']):
+                nameList.append(i['station']['name'])
+                expectedArrival.append(i['scharr'])
+                actualArrival.append(i['actarr'])
+                finalDelay.append(int(i['status'].split(' ')[0]))
+        data = DataFrame({'Name':nameList,'Expected Arrival':expectedArrival,'Actual Arrival':actualArrival,'Delay':finalDelay})
+        excel_name = train_number + ".xlsx"
+        data.to_excel(excel_name,sheet_name=date,index=False)
+        print("Excel file created.")
+    else:
+        print("Something went wrong. Here's the response code: " + str(response_code))
     
 except (URLError, e):
     print ('Some error!', e)
