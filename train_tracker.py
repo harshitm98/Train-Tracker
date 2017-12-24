@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen, URLError
 from pandas import DataFrame
 import json
 
-train_number = '12479'
+train_number = '16382'
 date = '24-12-2017'
 
 request_url = "https://api.railwayapi.com/v2/live/train/" + train_number + "/date/" + date + "/apikey/nxhcd5deez/"
@@ -37,7 +37,7 @@ try:
                 actualArrival.append(i['actarr'])
                 finalDelay.append(int(i['status'].split(' ')[0]))
         data = DataFrame({'Name':nameList,'Expected Arrival':expectedArrival,'Actual Arrival':actualArrival,'Delay':finalDelay})
-        excel_name = train_number + ".xlsx"
+        excel_name = train_number +"_" + date + ".xlsx"
         data.to_excel(excel_name,sheet_name=date,index=False)
         print("Excel file created.")
     else:
